@@ -1,33 +1,42 @@
 #!/usr/bin/env python3
-"""Entry program for the 17 November 2026 world-news image (entry 2).
+"""Entry 2 for news-image-20261117: hand over the finished picture.
 
-The graded image is pre-rendered: entry.png sits next to this file in the
-repo (composed locally with Pillow from the user-supplied grid plus a
-masthead and a verified-news ticker). This program uses only the Python
-standard library, so it runs in the grader's bare environment with
-nothing installed. It simply copies the bundled image into the output
-directory the grader provides. Note: entry.png holds JPEG bytes, which
-the kit allows (PNG or JPEG, told apart by first bytes, name stays
-entry.png) — PNG was over the 1 MiB gate.
+The picture itself was composed beforehand (see render.py): the
+user-supplied nine-story grid, a navy masthead, and a ticker of
+verified 17 November 2026 news, all baked into entry.png next to
+this file. The grader's sandbox installs nothing, so this program
+sticks to the standard library and does one job only: place that
+finished picture where the grader expects it.
+
+Note on the file: entry.png carries JPEG bytes. The kit allows a
+PNG or a JPEG, told apart by its first bytes, with the name staying
+entry.png — a PNG of this photographic grid ran over the 1 MiB gate.
 """
 import os
 import shutil
 import sys
 
+IMAGE_NAME = "entry.png"
 
-def main():
-    source = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "entry.png")
-    if not os.path.exists(source):
-        print(f"entry.png not found next to {__file__}", file=sys.stderr)
+
+def locate_image():
+    """Return the path of the bundled picture beside this program."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(here, IMAGE_NAME)
+
+
+def run():
+    picture = locate_image()
+    if not os.path.isfile(picture):
+        print(f"{IMAGE_NAME} is missing beside {__file__}", file=sys.stderr)
         return 1
-    target_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "./out"
-    os.makedirs(target_dir, exist_ok=True)
-    target = os.path.join(target_dir, "entry.png")
-    shutil.copyfile(source, target)
-    print(f"copied entry.png to {target}")
+    destination_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "./out"
+    os.makedirs(destination_dir, exist_ok=True)
+    destination = os.path.join(destination_dir, IMAGE_NAME)
+    shutil.copyfile(picture, destination)
+    print(f"wrote {destination}")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(run())
